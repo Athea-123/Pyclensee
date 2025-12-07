@@ -55,7 +55,6 @@ class FormatStandardizer(DataCleaner):
     def convert_to_lowercase(self, columns: list) -> 'FormatStandardizer':
         """
         Converts text in specified columns to lowercase (e.g., 'John Doe' -> 'john doe').
-        Adapted from instructor reference 'LowerCase' class.
 
         Parameters:
         -----------
