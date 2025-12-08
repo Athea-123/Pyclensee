@@ -25,7 +25,6 @@ class BaseCleaner:
     def save_data(self, output_path):
         """Saves the current dataframe to a CSV file."""
         if self.df is not None:
-            # Ensure directory exists if path contains one
             directory = os.path.dirname(output_path)
             if directory and not os.path.exists(directory):
                 os.makedirs(directory)
