@@ -151,3 +151,10 @@ class Standardizer(BaseCleaner):
                 self._df[col] = self._df[col].astype(str).str.lower().map(bool_map)
                 self._log_change('standardize_booleans', {'column': col})
         return self
+    
+    def clean(self):
+        """
+        Required by BaseCleaner. 
+        We return self so the code doesn't crash.
+        """
+        return self
