@@ -1,22 +1,39 @@
 import pandas as pd
-from abc import ABC, abstractmethod
+import os
 
-class BaseCleaner(ABC):
-    """Base class for all cleaners"""
+class BaseCleaner:
+    def __init__(self, filepath):
+        self.filepath = filepath
+        self.df = None
 
-    def __init__(self, df: pd.DataFrame):
-        self._df = df.copy()  # encapsulation
-        self._log = []
+    def load_data(self, **kwargs):
+        """
+        Loads data from CSV. 
+        kwargs can be used for pd.read_csv arguments (e.g., header=1).
+        """
+        if not os.path.exists(self.filepath):
+            # Fallback for demonstration if file doesn't exist in 'mydata'
+            if os.path.exists(os.path.basename(self.filepath)):
+                self.filepath = os.path.basename(self.filepath)
+            else:
+                raise FileNotFoundError(f"File not found: {self.filepath}")
+        
+        self.df = pd.read_csv(self.filepath, **kwargs)
+        print(f"Data loaded successfully. Shape: {self.df.shape}")
+        return self.df
 
-    def get_data(self):
-        return self._df
+    def save_data(self, output_path):
+        """Saves the current dataframe to a CSV file."""
+        if self.df is not None:
+            # Ensure directory exists if path contains one
+            directory = os.path.dirname(output_path)
+            if directory and not os.path.exists(directory):
+                os.makedirs(directory)
+                
+            self.df.to_csv(output_path, index=False)
+            print(f"Data saved to {output_path}")
+        else:
+            print("No data to save.")
 
-    def record_change(self, message: str):
-        self._log.append(message)
-
-    def get_log(self):
-        return self._log
-
-    @abstractmethod
-    def clean(self):
-        pass
+    def set_data(self, df):
+        self.df = df

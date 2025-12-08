@@ -1,148 +1,41 @@
-from .base import BaseCleaner
 import pandas as pd
-from typing import Optional
+import re
 
-class Standardizer(BaseCleaner):
-    """
-    A class used to standardize formats of data in a DataFrame.
-    Inherits from BaseCleaner.
-    """
+class Standardizer:
+    def __init__(self, df):
+        self.df = df
 
-from .base import BaseCleaner
-import pandas as pd
-from typing import Optional
+    def clean_column_names(self):
+        """Standardizes column names to Title Case and strips spaces."""
+        if self.df is not None:
+            # Convert headers to string, strip whitespace, and Title Case
+            self.df.columns = [str(c).strip().title() for c in self.df.columns]
+            print(f"Cleaned column names: {list(self.df.columns)}")
 
-class Standardizer(BaseCleaner):
-    """
-    A class used to standardize formats of data in a DataFrame.
-    Inherits from BaseCleaner.
-    """
+    def standardize_dates(self, subset=None):
+        """Converts specific columns to datetime objects."""
+        if self.df is not None and subset:
+            for col in subset:
+                if col in self.df.columns:
+                    self.df[col] = pd.to_datetime(self.df[col], errors='coerce')
+            print(f"Standardized Dates in: {subset}")
 
-    def standardize_dates(self, columns: list, format: str = '%m/%d/%Y') -> 'Standardizer':
-        """Converts specified columns to a standard date format."""
-        for col in columns:
-            if col in self._df.columns:
-                # FIX: Added format='mixed' so it handles different styles in the same column
-                # FIX: Added dayfirst=False to assume Month/Day/Year (US Style)
-                self._df[col] = pd.to_datetime(self._df[col], errors='coerce', format='mixed', dayfirst=False).dt.strftime(format)
-                self.record_change(f"standardize_dates: column={col}, format={format}")
-        return self
-
-    def capitalize_names(self, columns: list) -> 'Standardizer':
-        """Converts text in specified columns to Title Case."""
-        for col in columns:
-            if col in self._df.columns:
-                self._df[col] = self._df[col].astype(str).str.title()
-                self.record_change(f"capitalize_names: column={col}")
-        return self
-
-    def convert_to_lowercase(self, columns: list) -> 'Standardizer':
-        """Converts text in specified columns to lowercase."""
-        for col in columns:
-            if col in self._df.columns:
-                self._df[col] = self._df[col].astype(str).str.lower()
-                self.record_change(f"convert_to_lowercase: column={col}")
-        return self
-
-    def fix_whitespace(self, columns: Optional[list] = None) -> 'Standardizer':
-        """Removes leading/trailing whitespace and replaces multiple spaces."""
-        if columns is None:
-            columns = self._df.select_dtypes(include=['object']).columns.tolist()
-            
-        for col in columns:
-            if col in self._df.columns:
-                before = (self._df[col].str.contains(r'\s{2,}', na=False)).sum()
-                self._df[col] = self._df[col].astype(str).str.strip().str.replace(r'\s+', ' ', regex=True)
-                self.record_change(f"fix_whitespace: columns={columns[:2]}, fixed_spaces={before}")
-        return self
-
-    def remove_special_chars(self, columns: list) -> 'Standardizer':
-        """Removes special characters and emojis."""
-        for col in columns:
-            if col in self._df.columns:
-                self._df[col] = self._df[col].astype(str).str.replace(r'[^a-zA-Z0-9\s]', '', regex=True)
-                self.record_change(f"remove_special_chars: column={col}")
-        return self
-
-    def standardize_booleans(self, columns: list) -> 'Standardizer':
-        """Converts Yes/No formats into standard True/False."""
-        bool_map = {
-            'yes': True, 'y': True, 'true': True, '1': True, 't': True,
-            'no': False, 'n': False, 'false': False, '0': False, 'f': False
-        }
-
-        for col in columns:
-            if col in self._df.columns:
-                self._df[col] = self._df[col].astype(str).str.lower().map(bool_map)
-                self.record_change(f"standardize_booleans: column={col}")
-        return self
+    # Legacy method from your previous scripts (Currency Cleaning)
+    def clean_currency_column(self, col):
+        """Removes symbols like '$' from currency columns and converts to numeric."""
+        if self.df is not None and col in self.df.columns:
+            self.df[col] = pd.to_numeric(
+                self.df[col].astype(str).str.replace(r'[^\d.]', '', regex=True),
+                errors='coerce'
+            )
+            print(f"Cleaned currency column: '{col}'")
     
-    def clean(self):
-        """Required by BaseCleaner. Return the cleaned DataFrame."""
-        return self.get_dataframe()
-
-    def get_dataframe(self):
-        """Returns the cleaned DataFrame safely."""
-        return self._df
-
-    # --- CRITICAL FIX: Added this helper method so it doesn't crash ---
-    def record_change(self, message):
-        """Helper to print logs since BaseCleaner might be missing it."""
-        print(f"Log: {message}")
-
-    def capitalize_names(self, columns: list) -> 'Standardizer':
-        """Converts text in specified columns to Title Case."""
-        for col in columns:
-            if col in self._df.columns:
-                self._df[col] = self._df[col].astype(str).str.title()
-                self.record_change(f"capitalize_names: column={col}")
-        return self
-
-    def convert_to_lowercase(self, columns: list) -> 'Standardizer':
-        """Converts text in specified columns to lowercase."""
-        for col in columns:
-            if col in self._df.columns:
-                self._df[col] = self._df[col].astype(str).str.lower()
-                self.record_change(f"convert_to_lowercase: column={col}")
-        return self
-
-    def fix_whitespace(self, columns: Optional[list] = None) -> 'Standardizer':
-        """Removes leading/trailing whitespace and replaces multiple spaces."""
-        if columns is None:
-            columns = self._df.select_dtypes(include=['object']).columns.tolist()
-            
-        for col in columns:
-            if col in self._df.columns:
-                before = (self._df[col].str.contains(r'\s{2,}', na=False)).sum()
-                self._df[col] = self._df[col].astype(str).str.strip().str.replace(r'\s+', ' ', regex=True)
-                self.record_change(f"fix_whitespace: columns={columns[:2]}, fixed_spaces={before}")
-        return self
-
-    def remove_special_chars(self, columns: list) -> 'Standardizer':
-        """Removes special characters and emojis."""
-        for col in columns:
-            if col in self._df.columns:
-                self._df[col] = self._df[col].astype(str).str.replace(r'[^a-zA-Z0-9\s]', '', regex=True)
-                self.record_change(f"remove_special_chars: column={col}")
-        return self
-
-    def standardize_booleans(self, columns: list) -> 'Standardizer':
-        """Converts Yes/No formats into standard True/False."""
-        bool_map = {
-            'yes': True, 'y': True, 'true': True, '1': True, 't': True,
-            'no': False, 'n': False, 'false': False, '0': False, 'f': False
-        }
-
-        for col in columns:
-            if col in self._df.columns:
-                self._df[col] = self._df[col].astype(str).str.lower().map(bool_map)
-                self.record_change(f"standardize_booleans: column={col}")
-        return self
-    def clean(self):
-            """Required by BaseCleaner. Return the cleaned DataFrame."""
-            return self.get_data()
-
-    def get_dataframe(self):
-            """Backward-compatible alias for `get_data()` that returns the cleaned DataFrame."""
-            return self.get_data()
-
+    # Legacy method from your previous scripts (Guest Cleaning)
+    def clean_guests_column(self, col):
+        """Extracts numbers from strings like '6+' -> 6."""
+        if self.df is not None and col in self.df.columns:
+             self.df[col] = pd.to_numeric(
+                 self.df[col].astype(str).str.extract(r'(\d+)')[0], 
+                 errors='coerce'
+             )
+             print(f"Cleaned guests column: '{col}'")
