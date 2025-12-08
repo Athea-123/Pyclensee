@@ -1,4 +1,4 @@
-from base import BaseCleaner
+from .base import BaseCleaner
 import pandas as pd
 from typing import Optional
 
