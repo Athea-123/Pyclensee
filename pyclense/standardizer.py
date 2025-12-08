@@ -21,7 +21,7 @@ class Standardizer(BaseCleaner):
 
         Returns:
         --------
-        FormatStandardizer
+        Standardizer
             Returns self to allow method chaining.
         """
         for col in columns:
@@ -42,7 +42,7 @@ class Standardizer(BaseCleaner):
 
         Returns:
         --------
-        FormatStandardizer
+        Standardizer
             Returns self to allow method chaining.
         """
         for col in columns:
@@ -62,7 +62,7 @@ class Standardizer(BaseCleaner):
 
         Returns:
         --------
-        FormatStandardizer
+        Standardizer
             Returns self to allow method chaining.
         """
         for col in columns:
@@ -83,7 +83,7 @@ class Standardizer(BaseCleaner):
 
         Returns:
         --------
-        FormatStandardizer
+        Standardizer
             Returns self to allow method chaining.
         """
         # If no columns are provided, find all text columns automatically
@@ -112,7 +112,7 @@ class Standardizer(BaseCleaner):
 
         Returns:
         --------
-        FormatStandardizer
+        Standardizer
             Returns self to allow method chaining.
         """
         for col in columns:
@@ -136,7 +136,7 @@ class Standardizer(BaseCleaner):
 
         Returns:
         --------
-        FormatStandardizer
+        Standardizer
             Returns self to allow method chaining.
         """
         # A map of all common ways people write "Yes" or "No"
