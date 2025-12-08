@@ -2,7 +2,7 @@ from base import BaseCleaner
 import pandas as pd
 from typing import Optional
 
-class FormatStandardizer(BaseCleaner):
+class Standardizer(BaseCleaner):
     """
     A class used to standardize formats of data in a DataFrame.
     Inherits from BaseCleaner.
