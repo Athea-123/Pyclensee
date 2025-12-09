@@ -8,7 +8,7 @@ except FileNotFoundError:
 
 setup(
     name="Pyclense",
-    version="0.1.1",
+    version="0.1.2",
     author="Athea",
     description="A simple, user-friendly Python library for basic data cleaning tasks.",
     long_description=long_desc,
