@@ -1,0 +1,175 @@
+Metadata-Version: 2.4
+Name: Pyclensee
+Version: 0.1.3
+Summary: A simple, user-friendly Python library for basic data cleaning tasks.
+Home-page: https://github.com/Athea-123/Pyclensee.git
+Author: Athea
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pandas>=2.0.0
+Requires-Dist: openpyxl>=3.1.0
+Dynamic: author
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Pyclense
+
+An Object-Oriented, Data Cleaning Toolkit for Python.
+
+Pyclense is a beginner-friendly Python library designed to simplify and automate essential data cleaning tasks. Built with an object-oriented structure, it allows you to clean, transform, and export datasets using reusable, modular components.
+
+Unlike simple script-based solutions, Pyclense uses *Inheritance*, *Polymorphism*, and *Composition* to create a stable and scalable environment for your data cleaning workflows.
+
+---
+
+## Badges
+
+[![PyPI version](https://badge.fury.io/py/pyclense.svg)](https://badge.fury.io/py/pyclense)  
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyclense)  
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+---
+
+## Key Features
+
+1. *Quick Missing Data Fixer*  
+   Spot and fill in blank or empty values in your dataset. You can replace them with mean, median, mode, or a default value — Pyclense handles the logic for you.
+
+2. *Duplicate Remover*  
+   Easily detect and remove repeated rows or entries. It highlights duplicates and lets you clean them with a single command.
+
+3. *Format Standardizer*  
+   Unify inconsistent formatting in your dataset — such as transforming dates into one format (e.g., MM/DD/YYYY) or removing emojis and special symbols from text fields.
+
+4. *Easy Data Preview and Export*  
+   Preview your data before and after cleaning using built-in table views. Export the cleaned dataset to CSV or Excel, including an auto-generated cleaning summary.
+
+---
+
+## Installation
+```
+Install Pyclense via PyPI:
+
+pip install pyclense
+```
+
+### From Source
+
+git clone https://github.com/Athea-123/Pyclense.git
+cd Pyclense
+pip install -e .
+
+---
+
+# Quick Start: Using the Pipeline
+The recommended way to use Pyclense is via the `CleaningPipeline` orchestrator.
+
+```Python
+
+from pyclense.base import BaseCleaner
+from pyclense.duplicate import DuplicateCleaner
+from pyclense.missing import MissingDataCleaner
+from pyclense.pipeline import CleaningPipeline
+
+# 1. Start with the BaseCleaner, loading data from a file
+base_cleaner = BaseCleaner("data/dataset.csv")
+
+# 2. Initialize the pipeline with the initial data holder
+pipeline = CleaningPipeline(base_cleaner)
+
+# 3. Add cleaning steps (Cleaner classes)
+pipeline.add_step(DuplicateCleaner)
+pipeline.add_step(MissingDataCleaner)
+
+# 4. Run the pipeline and get the final cleaned BaseCleaner instance
+final_result = pipeline.run()
+
+# 5. Save the result
+final_result.save_data("data/cleaned_output.csv")
+```
+---
+
+Pyclense uses an object-oriented approach where all specific cleaners inherit from a base class and are managed by a pipeline.
+
+### 1. `BaseCleaner` (Parent Class)
+
+The abstract parent class for all cleaners. It provides fundamental functionality and structure:
+
+* **Data Handling:** Initializes with either a file path (and loads data automatically) or an existing Pandas DataFrame.
+* **Accessors:** Provides `@property` access to the underlying DataFrame (`.df`).
+* **File I/O:** Includes methods for loading data (`._load_data`) and saving the final cleaned DataFrame (`.save_data(output_path)`).
+* **Polymorphism:** Enforces that all subclasses must implement the specific cleaning logic in an overridden `clean()` method.
+
+### 2. `CleaningPipeline` (Orchestrator)
+
+The `CleaningPipeline` is the key for workflow automation using **Composition**.
+
+* It accepts an initial `BaseCleaner` instance (which holds the data).
+* It manages a list of cleaning steps (Cleaner classes) added via `add_step()`.
+* The `run()` method iterates through the steps, instantiates each cleaner with the current state of the data, executes its `clean()` method, and updates the data for the next step.
+
+## Data Transformers
+These modules contain the specific cleaning logic, each overriding the abstract clean() method defined in BaseCleaner.
+
+`DuplicateCleaner `(duplicate.py): This transformer removes rows that are entirely identical across all columns, ensuring only the first occurrence is kept.
+
+`MissingDataCleaner` (missing.py): It's responsible for standardizing missing values. This involves replacing both standard pandas NaN values and strings that contain only whitespace (' ') with the standardized string "None".
+
+`FormatStandardizer` (standardizer.py): This class unifies data formats. Specifically, it standardizes date columns (like 'Review Date') to the MM/DD/YYYY format and removes non-ASCII characters, emojis, or symbols from other text-based columns.
+
+---
+## Demos
+For more in-depth examples, check out the Jupyter Notebook:
+
+`demo.ipynb`: Demonstrates the sequential application of DemoCleaner, FormatStandardizer, and MissingDataCleaner on a sample dataset.
+
+---
+## Contributors
+
+This project was developed as part of an Object-Oriented Programming course.
+
+---
+##  Contributing
+
+We welcome contributions from the community to help make Pyclense better! Please feel free to:
+
+* Report bugs by opening an Issue.
+* Suggest new features or improvements.
+* Submit pull requests with new modules or fixes.
+* Improve the documentation and examples.
+
+---
+### Team Members
+
+- **Athea Jane M. Budlong** - Lead Developer - [GitHub](https://github.com/Athea-123)
+- **Kate Avancena** - Developer - [GitHub](https://github.com/hyetw)
+- **Belle Margareth Jacobo** - Developer - [GitHub](https://github.com/jollibellefries)
+- **Sariba Abdula** - Developer - [GitHub](https://github.com/sariba28)
+
+---
+
+## 🤝 Acknowledgments
+
+We thank the following sources and individuals for their contribution and inspiration:
+
+* Our instructor for guidance and support throughout the development of Pyclense.
+* The established principles of data cleaning found in libraries that inspired our modular, object-oriented design.
+* The general data cleaning community for defining the best practices implemented in our various `Cleaner` modules.
+
+---
+
+## 📝 License
+
+This project is licensed under the **MIT License**. See the `LICENSE` file for details.
+
+

@@ -8,8 +8,8 @@ except FileNotFoundError:
 
 setup(
     name="Pyclensee",
-    version="0.1.2",
-    author="Athea-123",
+    version="0.1.3",
+    author="Athea",
     description="A simple, user-friendly Python library for basic data cleaning tasks.",
     long_description=long_desc,
     long_description_content_type="text/markdown",

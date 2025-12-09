@@ -1,0 +1,2 @@
+[console_scripts]
+pyclense = pyclense.cli:main

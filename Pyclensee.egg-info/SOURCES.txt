@@ -1,0 +1,16 @@
+LICENSE
+README.md
+setup.py
+Pyclensee.egg-info/PKG-INFO
+Pyclensee.egg-info/SOURCES.txt
+Pyclensee.egg-info/dependency_links.txt
+Pyclensee.egg-info/entry_points.txt
+Pyclensee.egg-info/requires.txt
+Pyclensee.egg-info/top_level.txt
+pyclense/__init__.py
+pyclense/base.py
+pyclense/cli.py
+pyclense/duplicate.py
+pyclense/missing.py
+pyclense/pipeline.py
+pyclense/standardizer.py
