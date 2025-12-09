@@ -7,7 +7,7 @@ except FileNotFoundError:
     long_desc = ""
 
 setup(
-    name="Pyclensee",
+    name="pyclense",
     version="0.1.2",
     author="Athea",
     description="A simple, user-friendly Python library for basic data cleaning tasks.",
